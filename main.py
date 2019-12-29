@@ -38,18 +38,18 @@ def gen_frames(camera_id,cap):
         #    while True:
         ret, frame = cap.read()
         if not ret:
-            # print('no frame')
+            print('no frame')
 
         print('1')
 
         frame = imutils.resize(frame, width=400)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = face_detection.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=5,minSize=(30,30),flags=cv2.CASCADE_SCALE_IMAGE)
-        # print('length faces outside: ',len(faces))
+        print('length faces outside: ',len(faces))
         # print('faces type',type(faces))
         if len(faces)>0:
-            # print('2')
-            # print('length face:',len(faces))
+            print('2')
+            print('length face:',len(faces))
             # draw box around faces
             for face in faces:
                 (x,y,w,h) = face
@@ -60,28 +60,28 @@ def gen_frames(camera_id,cap):
                 roi = img_to_array(roi)
                 roi = np.expand_dims(roi, axis=0)
 
-                # print('3')
+                print('3')
                 # emotion_classifier = load_model('model/_mini_XCEPTION.102-0.66.hdf5', compile=False)
 
                 # with graph.as_default():
                 result = emotion_classifier.predict(roi)[0]
                 
-                # print(result)
+                print(result)
                 frame = cv2.rectangle(frame,(x,y-30),(x+w,y+h+10),(255,0,0),2)
 
-                # print('4')
+                print('4')
 
                 if result is not None:
-                    # print('5')
+                    print('5')
                     emotion_index = np.argmax(result)
-                    # print(EMOTIONS[emotion_index])
+                    print(EMOTIONS[emotion_index])
                     font = cv2.FONT_HERSHEY_SIMPLEX
                     cv2.putText(frame,EMOTIONS[emotion_index],(x+5,y-35), font, 0.6,(255,0,0),2,cv2.LINE_AA) 
                     # cv2.imshow('Video', frame)
 
                 # if cv2.waitKey(1) & 0xFF == ord('q'):
                 # break
-                # print('6')
+                print('6')
         jpeg = cv2.imencode('.jpg', frame)[1]
             # jpeg_sa_text= base64.b64encode('.jpg', frame)
             # return jpeg_sa_text
@@ -101,7 +101,7 @@ def gen(camera_id):
         frame = gen_frames(camera_id,cap)
         if not frame:
             continue
-        # print('frame')
+        print('frame')
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
@@ -122,7 +122,5 @@ def index():
 
 
 if __name__ == '__main__':
-    # app.run(port='5002')
-    app.run(host='0.0.0.0', port='8081')
-    
-    
+    app.run(port='5002')
+    app.run(host='0.0.0.0', port=8081)
